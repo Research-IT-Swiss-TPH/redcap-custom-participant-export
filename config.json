@@ -1,0 +1,22 @@
+{
+    "name": "Custom Participant Export",
+    "namespace": "STPH\\CustomParticipantExport",
+    "framework-version": 6,
+    "description": "A simple external module for REDCap that enables custom participant export to CSV. ",
+    "authors": [
+        {
+            "name": "Ekin Tertemiz",
+            "email": "ekin.tertemiz@swisstph.ch",
+            "institution": "Swiss Tropical and Public Health Institute"
+        }
+    ],
+    "compatibility": {
+      "php-version-min": "5.4.0",
+      "php-version-max": "",
+      "redcap-version-min": "8.1.0",
+      "redcap-version-max": ""
+    },
+    "permissions": [
+      "redcap_every_page_top"
+    ]
+  }
