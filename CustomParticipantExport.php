@@ -36,7 +36,7 @@ class CustomParticipantExport extends AbstractExternalModule {
 
         foreach($fields as $field){
 
-            $select_statement .= ", t_".$field["field_name"].".value as '".$field["field_name"]."' ";
+            $select_statement .= ", t_".$field["field_name"].".value as '".($field["column_name"] == NULL ? $field["field_name"] : $field["column_name"])."' ";
 
             $join_statement .= " LEFT JOIN redcap_data t_".$field["field_name"]." ON (r.record = t_".$field["field_name"].".record AND t_".$field["field_name"].".field_name = '".$field["field_name"]."') ";
         }        
