@@ -22,28 +22,65 @@ class CustomParticipantExport extends AbstractExternalModule {
     public function includeJsAndCss()
     {
     ?>
-        <script src="<?= $this->getUrl("/js/custom_participant_export.js") ?>"></script>
+        <script src="<?= $this->getUrl("js/custom_participant_export.js") ?>"></script>
         <script>
+            var STPH_CustomParticipantExport = {};
             STPH_CustomParticipantExport.requestHandlerUrl = "<?= $this->getUrl("requestHandler.php") ?>";
         </script>
     <?php
     }
 
-    public function downloadCSV(){
-        return "Hello World";
+    public function test(){
+        var_dump($this->getParticipants($_GET["pid"],$_GET["survey_id"],$_GET["event_id"]));
+
     }
 
+    public function downloadCSV(){
 
-    public function getParticipants() {
         # Prepare variables
         $pid = $_GET["pid"];
         $survey_id = $_GET["survey_id"];
-
-        if( !isset($_GET["survey_id"]) ) {
-            $survey_id =  "No Survey ID";
-        }
-
         $event_id = $_GET["event_id"];
+
+        // CSV Download method copied from \Surveys\participant_export.php
+
+        # Get Participants
+        $participants = $this->getParticipants($_GET["pid"],$_GET["survey_id"],$_GET["event_id"]);
+
+        //var_dump($participants);
+        //exit();
+
+        # Create Headers
+        $headers = ["oid", "access_code"];
+
+        // Begin writing file from query result
+        $fp = fopen('php://memory', "x+");
+
+        if ($fp) {
+            // Write headers to file
+            fputcsv($fp, $headers);
+
+            foreach($participants as $key => $participant) {
+                $row = implode(",", $participant[$key]);
+                fputcsv($fp, $row);
+            }
+
+
+            header('Pragma: anytextexeptno-cache', true);
+            header("Content-type: application/csv");
+            header("Content-Disposition: attachment; filename= Test.csv");
+    
+            // Open file for reading and output to user
+            fseek($fp, 0);
+            print addBOMtoUTF8(stream_get_contents($fp));
+
+        } else {
+            print "Error";
+        }
+    }
+
+
+    public function getParticipants($pid, $survey_id, $event_id) {
 
         $fields = $this->getSubSettings("fields");
         # To Do: Remove duplicate fields - otherwise the query can break!
