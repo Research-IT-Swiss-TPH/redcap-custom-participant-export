@@ -22,9 +22,10 @@ class CustomParticipantExport extends AbstractExternalModule {
     public function includeJsAndCss()
     {
     ?>
-    <script>
-        STPH_CustomParticipantExport.requestHandlerUrl = "<?= $this->getUrl("requestHandler.php") ?>";
-    </script>
+        <script src="<?= $this->getUrl("/js/custom_participant_export.js") ?>"></script>
+        <script>
+            STPH_CustomParticipantExport.requestHandlerUrl = "<?= $this->getUrl("requestHandler.php") ?>";
+        </script>
     <?php
     }
 
@@ -91,37 +92,16 @@ class CustomParticipantExport extends AbstractExternalModule {
     # Trigger Hook
     public function redcap_every_page_top($project_id) {
 
-        global $Proj;
-
         # Filter for Participant List Page
         if( PAGE === "Surveys/invite_participants.php" ) {
 
             # Check if correct Tab
             if( isset($_GET["participant_list"])) {
 
-                # Include necessary Javscript Variable
                 $this->includeJsAndCss();
                 
                 //echo count($this->getParticipants());
-                var_dump($this->getParticipants());
-
-                ?>
-                <script>
-                    // A $( document ).ready() block.
-                    $( document ).ready(function() {
-
-                        var newButtonHTML = '<button class="btn jqbuttonmed"><i class="fas fa-file-csv"></i> Custom Export</button>';
-                        var tableCol = $('table#partListTitle td.d-none');
-                        var btn = $('table#partListTitle td.d-none div:nth-child(2)');
-
-                        //  Prepend Button
-                        btn.prepend(newButtonHTML);
-                        tableCol.width("250");
-
-                    });
-                </script>
-                
-                <?php
+                //var_dump($this->getParticipants());
 
             }
 
