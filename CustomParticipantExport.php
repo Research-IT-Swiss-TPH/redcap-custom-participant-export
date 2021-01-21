@@ -19,6 +19,19 @@ class CustomParticipantExport extends AbstractExternalModule {
 
     }
 
+    public function includeJsAndCss()
+    {
+    ?>
+    <script>
+        STPH_CustomParticipantExport.requestHandlerUrl = "<?= $this->getUrl("requestHandler.php") ?>";
+    </script>
+    <?php
+    }
+
+    public function downloadCSV(){
+        return "Hello World";
+    }
+
 
     public function getParticipants() {
         # Prepare variables
@@ -86,21 +99,12 @@ class CustomParticipantExport extends AbstractExternalModule {
             # Check if correct Tab
             if( isset($_GET["participant_list"])) {
 
-                $event_id = $_GET['event_id'];
-                $instrument=$Proj->surveys[$_GET['survey_id']]['form_name'];
-                //var_dump(\Survey::getParticipantList($Proj->forms[$instrument]['survey_id'], $event_id));
-
-                echo count($this->getParticipants());
+                # Include necessary Javscript Variable
+                $this->includeJsAndCss();
+                
+                //echo count($this->getParticipants());
                 var_dump($this->getParticipants());
 
-                echo "<br>";
-                echo $_GET['event_id'];
-                echo "<br>";
-                var_dump($this->getSubSettings("fields"));
-
-                $list = \Redcap::getParticipantList($Proj->surveys[$_GET['survey_id']]['form_name'], $_GET['event_id']);
-                //echo count($list);
-                //var_dump($list);
                 ?>
                 <script>
                     // A $( document ).ready() block.
