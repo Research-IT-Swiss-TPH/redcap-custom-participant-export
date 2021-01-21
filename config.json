@@ -18,5 +18,29 @@
     },
     "permissions": [
       "redcap_every_page_top"
+    ],
+    "project-settings": [
+      {
+        "key": "fields",
+        "name": "Custom Field",
+        "type": "sub_settings",
+        "repeatable": true,
+        "sub_settings": [
+          {
+            "key": "field_name",
+            "name": "Select field name from list",
+            "required": false,
+            "type": "field-list",
+            "repeatable": false
+          },
+          {
+            "key": "column_name",
+            "name": "Define the column name",
+            "required": false,
+            "type": "text",
+            "repeatable": false
+          }
+        ]
+      }
     ]
   }
