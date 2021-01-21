@@ -32,8 +32,8 @@ class CustomParticipantExport extends AbstractExternalModule {
         $event_id = $_GET["event_id"];
 
         $fields = $this->getSubSettings("fields");
-        // To Do: # Check for duplicates otherwise the query can break
-
+        # To Do: Remove duplicate fields - otherwise the query can break!
+        
         foreach($fields as $field){
 
             $select_statement .= ", t_".$field["field_name"].".value as '".($field["column_name"] == NULL ? $field["field_name"] : $field["column_name"])."' ";
