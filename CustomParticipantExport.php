@@ -23,8 +23,10 @@ class CustomParticipantExport extends AbstractExternalModule {
     public function includeJsAndCss()
     {
     ?>
+        <?=$this->initializeJavascriptModuleObject()?>
         <script src="<?= $this->getUrl("js/custom_participant_export.js") ?>"></script>
         <script>
+            var module = <?=$this->getJavascriptModuleObjectName()?>;
             var STPH_CustomParticipantExport = {};
             STPH_CustomParticipantExport.requestHandlerUrl = "<?= $this->getUrl("requestHandler.php") ?>";
         </script>

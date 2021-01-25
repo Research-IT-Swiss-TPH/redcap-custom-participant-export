@@ -1,11 +1,12 @@
 $(function() {
     'use strict';
 
-
     // A $( document ).ready() block.
     $( document ).ready(function() {
 
-        var url = "'"+STPH_CustomParticipantExport.requestHandlerUrl + "&type=downloadCSV&survey_id=9&event_id=41'; ";
+        var parameters = getUrlEncodedParameters();
+
+        var url = "'"+STPH_CustomParticipantExport.requestHandlerUrl + "&type=downloadCSV" + parameters + "'";
 
         var newButtonHTML = '<button onclick="window.location.href='+url+'" class="btn jqbuttonmed"><i class="fas fa-file-csv"></i> Custom Export</button>';
         var tableCol = $('table#partListTitle td.d-none');
@@ -17,6 +18,13 @@ $(function() {
 
     });
 
+    function getUrlEncodedParameters(){
+        let e_id = module.getUrlParameter("event_id");
+        let p_id = module.getUrlParameter("pid");
+        let s_id = module.getUrlParameter("survey_id");
+
+        return '&event_id=' + e_id + '&pid=' + p_id + '&survey_id=' + s_id ;
+    }
 
 });
 
