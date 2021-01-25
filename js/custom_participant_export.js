@@ -4,16 +4,20 @@ $(function() {
     // A $( document ).ready() block.
     $( document ).ready(function() {
 
+        console.log("Test");
+
         var parameters = getUrlEncodedParameters();
 
         var url = "'"+STPH_CustomParticipantExport.requestHandlerUrl + "&type=downloadCSV" + parameters + "'";
-
+        
         var newButtonHTML = '<button onclick="window.location.href='+url+'" class="btn jqbuttonmed"><i class="fas fa-file-csv"></i> Custom Export</button>';
         var tableCol = $('table#partListTitle td.d-none');
-        var btn = $('table#partListTitle td.d-none div:nth-child(2)');
+        
+        //  Select element where the new button should be prepended. The selection is not very stable since there are no explicit IDs.
+        var btnDiv = $('table#partListTitle td.d-none div[style="padding:0"]');
 
         //  Prepend Button
-        btn.prepend(newButtonHTML);
+        btnDiv.prepend(newButtonHTML);
         tableCol.width("250");
 
     });
