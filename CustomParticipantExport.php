@@ -27,6 +27,7 @@ class CustomParticipantExport extends AbstractExternalModule {
         <script>
             var module = <?=$this->getJavascriptModuleObjectName()?>;
             var STPH_CustomParticipantExport = {};
+            STPH_CustomParticipantExport.isDisabled = false;
             STPH_CustomParticipantExport.requestHandlerUrl = "<?= $this->getUrl("requestHandler.php") ?>";
         </script>
     <?php
@@ -35,13 +36,22 @@ class CustomParticipantExport extends AbstractExternalModule {
     public function downloadCSV(){
         // CSV Download method copied from \Surveys\participant_export.php
 
-        # Prepare variables
         $pid = $_GET["pid"];
         $survey_id = $_GET["survey_id"];
         $event_id = $_GET["event_id"];
 
+        if( !isset($_GET["pid"]) ) {
+            print "Error: No project id.";
+            exit();
+        }
+
+        if( !isset($_GET["survey_id"]) || !isset($_GET["event_id"]) ) {
+            $event_id = getEventId();
+            $survey_id = \Survey::getSurveyId();
+        }
+
         # Get Participants
-        $participants = $this->getParticipants( $_GET["pid"], $_GET["survey_id"], $_GET["event_id"] );
+        $participants = $this->getParticipants( $pid, $survey_id, $event_id );
 
         if(get_class($participants) == "Exception") {
             print $participants->getMessage();
@@ -142,8 +152,8 @@ class CustomParticipantExport extends AbstractExternalModule {
             # Check if correct Tab
             if( isset($_GET["participant_list"])) {
 
-                $this->includeJsAndCss();             
-                
+                $this->includeJsAndCss();
+
             }
 
         }
