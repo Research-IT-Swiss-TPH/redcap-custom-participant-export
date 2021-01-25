@@ -17,7 +17,6 @@ class CustomParticipantExport extends AbstractExternalModule {
     {
         parent::__construct();
         define("MODULE_DOCROOT", $this->getModulePath());
-
     }
 
     public function includeJsAndCss()
@@ -42,7 +41,12 @@ class CustomParticipantExport extends AbstractExternalModule {
         $event_id = $_GET["event_id"];
 
         # Get Participants
-        $participants = $this->getParticipants($_GET["pid"],$_GET["survey_id"],$_GET["event_id"]);
+        $participants = $this->getParticipants( $_GET["pid"], $_GET["survey_id"], $_GET["event_id"] );
+
+        if(get_class($participants) == "Exception") {
+            print $participants->getMessage();
+            exit();
+        }
 
         # Create Headers
         $headers = ["access_code", "hash", "record"];
@@ -78,9 +82,9 @@ class CustomParticipantExport extends AbstractExternalModule {
 
         } else {
             print "Error: Could not write file into memory.";
+            exit();
         }
     }
-
 
     public function getParticipants($pid, $survey_id, $event_id) {
 
@@ -99,7 +103,7 @@ class CustomParticipantExport extends AbstractExternalModule {
             # Prepare SQL statement to fetch participant data
             $query = $this->query(
                 '
-                    SELECT DISTINCT p.access_code, p.hash, r.record
+                    SELECTA DISTINCT p.access_code, p.hash, r.record
                     '.$select_statement.'
                     FROM redcap_surveys_participants p
                     LEFT JOIN redcap_surveys_response r ON p.participant_id = r.participant_id
@@ -138,7 +142,7 @@ class CustomParticipantExport extends AbstractExternalModule {
             # Check if correct Tab
             if( isset($_GET["participant_list"])) {
 
-                $this->includeJsAndCss();
+                $this->includeJsAndCss();             
                 
             }
 
