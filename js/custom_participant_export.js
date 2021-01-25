@@ -12,12 +12,13 @@ $(function() {
         
         var newButtonHTML = '<button onclick="window.location.href='+url+'" class="btn jqbuttonmed"><i class="fas fa-file-csv"></i> Custom Export</button>';
         var tableCol = $('table#partListTitle td.d-none');
-        
+
         //  Select element where the new button should be prepended. The selection is not very stable since there are no explicit IDs.
         var btnDiv = $('table#partListTitle td.d-none div[style="padding:0"]');
 
         //  Prepend Button
         btnDiv.prepend(newButtonHTML);
+        //  Increase table column width to fit the button
         tableCol.width("250");
 
     });
