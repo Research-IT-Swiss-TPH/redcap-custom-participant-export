@@ -11,6 +11,8 @@ use ExternalModules\ExternalModules;
  */
 class CustomParticipantExport extends AbstractExternalModule {
 
+    public $export_field;
+
     public function __construct()
     {
         parent::__construct();
@@ -30,19 +32,15 @@ class CustomParticipantExport extends AbstractExternalModule {
     }
 
     public function downloadCSV(){
+        // CSV Download method copied from \Surveys\participant_export.php
 
         # Prepare variables
         $pid = $_GET["pid"];
         $survey_id = $_GET["survey_id"];
         $event_id = $_GET["event_id"];
 
-        // CSV Download method copied from \Surveys\participant_export.php
-
         # Get Participants
         $participants = $this->getParticipants($_GET["pid"],$_GET["survey_id"],$_GET["event_id"]);
-
-        //var_dump($participants);
-        //exit();
 
         # Create Headers
         $headers = ["access_code", "hash", "record"];
@@ -63,12 +61,10 @@ class CustomParticipantExport extends AbstractExternalModule {
         if ($fp) {
             // Write headers to file
             fputcsv($fp, $headers);
-            //print $headers;
 
-            foreach($participants as $key => $participant) {
+            foreach($participants as $participant) {
                 fputcsv($fp, $participant);
             }
-
 
             header('Pragma: anytextexeptno-cache', true);
             header("Content-type: application/csv");
@@ -79,7 +75,7 @@ class CustomParticipantExport extends AbstractExternalModule {
             print addBOMtoUTF8(stream_get_contents($fp));
 
         } else {
-            print "Error";
+            print "Error: Could not write file into memory.";
         }
     }
 
