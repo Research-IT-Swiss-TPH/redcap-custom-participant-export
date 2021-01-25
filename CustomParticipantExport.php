@@ -11,7 +11,6 @@ use ExternalModules\ExternalModules;
  */
 class CustomParticipantExport extends AbstractExternalModule {
 
-
     public function __construct()
     {
         parent::__construct();
@@ -30,11 +29,6 @@ class CustomParticipantExport extends AbstractExternalModule {
     <?php
     }
 
-    public function test(){
-        var_dump($this->getParticipants($_GET["pid"],$_GET["survey_id"],$_GET["event_id"]));
-
-    }
-
     public function downloadCSV(){
 
         # Prepare variables
@@ -51,7 +45,17 @@ class CustomParticipantExport extends AbstractExternalModule {
         //exit();
 
         # Create Headers
-        $headers = ["oid", "access_code"];
+        $headers = ["access_code", "hash", "record"];
+        $fields = $this->getSubSettings("fields");
+        foreach($fields as $field) {
+            $name = $field["field_name"];
+
+            if( $field["column_name"] != NULL) {
+               $name = $field["column_name"];
+            }
+
+            $headers[] = $name;
+        }
 
         // Begin writing file from query result
         $fp = fopen('php://memory', "x+");
@@ -59,10 +63,10 @@ class CustomParticipantExport extends AbstractExternalModule {
         if ($fp) {
             // Write headers to file
             fputcsv($fp, $headers);
+            //print $headers;
 
             foreach($participants as $key => $participant) {
-                $row = implode(",", $participant[$key]);
-                fputcsv($fp, $row);
+                fputcsv($fp, $participant);
             }
 
 
@@ -85,6 +89,7 @@ class CustomParticipantExport extends AbstractExternalModule {
         $fields = $this->getSubSettings("fields");
         # To Do: Remove duplicate fields - otherwise the query can break!
         
+        # Iterate over fields and add a JOIN statement for each one
         foreach($fields as $field){
 
             $select_statement .= ", t_".$field["field_name"].".value as '".($field["column_name"] == NULL ? $field["field_name"] : $field["column_name"])."' ";
@@ -137,9 +142,6 @@ class CustomParticipantExport extends AbstractExternalModule {
 
                 $this->includeJsAndCss();
                 
-                //echo count($this->getParticipants());
-                //var_dump($this->getParticipants());
-
             }
 
         }
