@@ -11,8 +11,6 @@ use ExternalModules\ExternalModules;
  */
 class CustomParticipantExport extends AbstractExternalModule {
 
-    public $export_field;
-
     public function __construct()
     {
         parent::__construct();
@@ -35,9 +33,8 @@ class CustomParticipantExport extends AbstractExternalModule {
 
     public function downloadCSV(){
         // CSV Download method copied from \Surveys\participant_export.php
+        global $app_title;
 
-        print $this->getProjectId();
-        exit();
         
         $survey_id = $_GET["survey_id"];
         $event_id = $_GET["event_id"];
@@ -79,11 +76,11 @@ class CustomParticipantExport extends AbstractExternalModule {
                 fputcsv($fp, $participant);
             }
 
-            $filename = 
+            $download_filename = camelCase(html_entity_decode($app_title, ENT_QUOTES)) . "_CustomParticipants_" . date("Y-m-d_Hi") . ".csv";
 
             header('Pragma: anytextexeptno-cache', true);
             header("Content-type: application/csv");
-            header("Content-Disposition: attachment; filename= Test.csv");
+            header("Content-Disposition: attachment; filename= $download_filename");
     
             // Open file for reading and output to user
             fseek($fp, 0);
