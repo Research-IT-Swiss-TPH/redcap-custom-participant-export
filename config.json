@@ -2,7 +2,7 @@
     "name": "Custom Participant Export",
     "namespace": "STPH\\CustomParticipantExport",
     "framework-version": 6,
-    "description": "A simple external module for REDCap that enables custom participant export to CSV. ",
+    "description": "A simple external module for REDCap that enables custom participant export to CSV. This module adds a button next to 'Export list' which triggers the download for a custom participant export in .csv format. The customization can be made via module configuration on project level.",
     "authors": [
         {
             "name": "Ekin Tertemiz",
