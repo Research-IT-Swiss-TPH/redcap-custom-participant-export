@@ -36,14 +36,11 @@ class CustomParticipantExport extends AbstractExternalModule {
     public function downloadCSV(){
         // CSV Download method copied from \Surveys\participant_export.php
 
-        $pid = $_GET["pid"];
+        print $this->getProjectId();
+        exit();
+        
         $survey_id = $_GET["survey_id"];
         $event_id = $_GET["event_id"];
-
-        if( !isset($_GET["pid"]) ) {
-            print "Error: No project id.";
-            exit();
-        }
 
         if( !isset($_GET["survey_id"]) || !isset($_GET["event_id"]) ) {
             $event_id = getEventId();
@@ -51,7 +48,7 @@ class CustomParticipantExport extends AbstractExternalModule {
         }
 
         # Get Participants
-        $participants = $this->getParticipants( $pid, $survey_id, $event_id );
+        $participants = $this->getParticipants( $survey_id, $event_id );
 
         if(get_class($participants) == "Exception") {
             print $participants->getMessage();
@@ -82,6 +79,8 @@ class CustomParticipantExport extends AbstractExternalModule {
                 fputcsv($fp, $participant);
             }
 
+            $filename = 
+
             header('Pragma: anytextexeptno-cache', true);
             header("Content-type: application/csv");
             header("Content-Disposition: attachment; filename= Test.csv");
@@ -96,7 +95,7 @@ class CustomParticipantExport extends AbstractExternalModule {
         }
     }
 
-    public function getParticipants($pid, $survey_id, $event_id) {
+    public function getParticipants($survey_id, $event_id) {
 
         $fields = $this->getSubSettings("fields");
         # To Do: Remove duplicate fields - otherwise the query can break!

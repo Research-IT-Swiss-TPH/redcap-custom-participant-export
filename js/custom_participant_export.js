@@ -35,14 +35,13 @@ $(function() {
 
     function getUrlEncodedParameters(){
         let e_id = module.getUrlParameter("event_id");
-        let p_id = module.getUrlParameter("pid");
         let s_id = module.getUrlParameter("survey_id");
 
-        if(e_id == undefined || p_id == undefined || s_id == undefined) {
+        if(e_id == undefined || s_id == undefined) {
             return "";
         }
 
-        return '&event_id=' + e_id + '&pid=' + p_id + '&survey_id=' + s_id ;
+        return '&event_id=' + e_id + '&survey_id=' + s_id ;
     }
 
 });
