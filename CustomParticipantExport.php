@@ -100,10 +100,10 @@ class CustomParticipantExport extends AbstractExternalModule {
         }        
         
         try {
-            # Prepare SQL statement to fetch participant data
+            # Prepare SQL statement (escapes query parameters) to fetch participant data
             $query = $this->query(
                 '
-                    SELECTA DISTINCT p.access_code, p.hash, r.record
+                    SELECT DISTINCT p.access_code, p.hash, r.record
                     '.$select_statement.'
                     FROM redcap_surveys_participants p
                     LEFT JOIN redcap_surveys_response r ON p.participant_id = r.participant_id
