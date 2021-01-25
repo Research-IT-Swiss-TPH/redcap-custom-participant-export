@@ -1,9 +1,13 @@
 # Custom Participants Export for REDCap
 
 A simple external module for REDCap that enables custom participant export to CSV. 
-This module adds a button 'Custom Export' next to 'Export list' which triggers the download for a custom participant export in .csv format. The customization can be made via module configuration on project level.
+
+
+This module adds a button 'Custom Export' next to 'Export list' which triggers the download for a custom participant export in .csv format. 
 
 ![Module Button](./img/screenshot_new.png "Module Button")
+
+The customization can be made via module configuration on project level.
 
 ![Module Configuration](./img/screenshot_2.png "Module Configuration")
 
