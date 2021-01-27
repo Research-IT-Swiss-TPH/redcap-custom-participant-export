@@ -34,7 +34,6 @@ class CustomParticipantExport extends AbstractExternalModule {
     public function downloadCSV(){
         // CSV Download method copied from \Surveys\participant_export.php
         global $app_title;
-
         
         $survey_id = $_GET["survey_id"];
         $event_id = $_GET["event_id"];
@@ -118,7 +117,6 @@ class CustomParticipantExport extends AbstractExternalModule {
                     WHERE p.survey_id = ?
                     AND p.event_id = ?
                     AND p.access_code IS NOT NULL
-
                 ',
                 [
                     $survey_id,
