@@ -97,30 +97,12 @@ class CustomParticipantExport extends AbstractExternalModule {
 
     public function getParticipants($survey_id, $event_id) {
 
-        # Add access codes to participants if they do not have yet.
-        $query = $this->query(
-            '
-            SELECT participant_id
-            FROM redcap_surveys_participants
-            WHERE 
-                survey_id = ? 
-                AND event_id = ? 
-                AND access_code IS NULL
-            ',
-            [
-                $survey_id, 
-                $event_id
-            ]
-        );
+        global $Proj;
 
-        while($row = $query->fetch_assoc()){
-            $participant_ids[] = $row;
-        }
-
-        if(count($participant_ids) > 0) {
-            \Survey::getAccessCodes($participant_ids);
-        }
-     
+        #    Add participant ids and create access_codes 
+        #   (This is necessary otherwise user has to trigger Default CSV Export before he can get all custom exports)
+        \REDCap::getParticipantList($Proj->surveys[$survey_id]['form_name'], $event_id);
+            
         # Get custom fields from module settings
         $fields = $this->getSubSettings("fields");
         
