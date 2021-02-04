@@ -33,15 +33,17 @@ $(function() {
         tableCol.width("250");
     }
 
+
     function getUrlEncodedParameters(){
         let e_id = module.getUrlParameter("event_id");
         let s_id = module.getUrlParameter("survey_id");
 
         if(e_id == undefined || s_id == undefined) {
             return "";
+        } else {
+            return '&event_id=' + e_id + '&survey_id=' + s_id;
         }
 
-        return '&event_id=' + e_id + '&survey_id=' + s_id ;
     }
 
 });
