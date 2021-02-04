@@ -3,10 +3,18 @@ $(function() {
 
     // A $( document ).ready() block.
     $( document ).ready(function() {
-
+        
+        // Add button on page load
         var parameters = getUrlEncodedParameters();
-
         addButton();
+
+        // Detect Ajax request within loadPartList() in InviteParticipants.js:102
+        // Otherwise button gets removed on part list change
+        $(document).ajaxSuccess(function() {
+            //  Re-add button
+            var parameters = getUrlEncodedParameters();
+            addButton();
+        });
 
     });
 
