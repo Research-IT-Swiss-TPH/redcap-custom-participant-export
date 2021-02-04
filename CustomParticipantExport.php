@@ -31,17 +31,21 @@ class CustomParticipantExport extends AbstractExternalModule {
     <?php
     }
 
+
     public function downloadCSV(){
         // CSV Download method copied from \Surveys\participant_export.php
         global $app_title;
-        
+        global $Proj;
+
+        // If no survey id, assume it's the first form and retrieve
+        if (!isset($_GET["survey_id"]) && !isset($_GET["event_id"]))
+        {
+            $_GET['survey_id'] = \Survey::getSurveyId();
+            $_GET["event_id"] = getEventId();
+        }
+                
         $survey_id = $_GET["survey_id"];
         $event_id = $_GET["event_id"];
-
-        if( !isset($_GET["survey_id"]) || !isset($_GET["event_id"]) ) {
-            $event_id = getEventId();
-            $survey_id = \Survey::getSurveyId();
-        }
 
         # Get Participants
         $participants = $this->getParticipants( $survey_id, $event_id );
@@ -93,37 +97,66 @@ class CustomParticipantExport extends AbstractExternalModule {
 
     public function getParticipants($survey_id, $event_id) {
 
+        # Add access codes to participants if they do not have yet.
+        $query = $this->query(
+            '
+            SELECT participant_id
+            FROM redcap_surveys_participants
+            WHERE 
+                survey_id = ? 
+                AND event_id = ? 
+                AND access_code IS NULL
+            ',
+            [
+                $survey_id, 
+                $event_id
+            ]
+        );
+
+        while($row = $query->fetch_assoc()){
+            $participant_ids[] = $row;
+        }
+
+        if(count($participant_ids) > 0) {
+            \Survey::getAccessCodes($participant_ids);
+        }
+     
+        # Get custom fields from module settings
         $fields = $this->getSubSettings("fields");
-        # To Do: Remove duplicate fields - otherwise the query can break!
         
-        # Iterate over fields and add a JOIN statement for each one
+        # Iterate over fields and do a Pivot Calculation
         foreach($fields as $field){
-
-            $select_statement .= ", t_".$field["field_name"].".value as '".($field["column_name"] == NULL ? $field["field_name"] : $field["column_name"])."' ";
-
-            $join_statement .= " LEFT JOIN redcap_data t_".$field["field_name"]." ON (r.record = t_".$field["field_name"].".record AND t_".$field["field_name"].".field_name = '".$field["field_name"]."') ";
-        }        
+            $select_statement .= ", MAX(IF(d.field_name = '".$field["field_name"]."', d.value, NULL)) AS '".($field["column_name"] == NULL ? $field["field_name"] : $field["column_name"])."' ";
+        } 
         
         try {
-            # Prepare SQL statement (escapes query parameters) to fetch participant data
+
+            # Prepare SQL statement
             $query = $this->query(
                 '
-                    SELECT DISTINCT p.access_code, p.hash, r.record
+                SELECT
+                    d.record,
+                    sr.participant_id,
+                    sp.access_code
                     '.$select_statement.'
-                    FROM redcap_surveys_participants p
-                    LEFT JOIN redcap_surveys_response r ON p.participant_id = r.participant_id
-                    '.$join_statement.'
-
-                    WHERE p.survey_id = ?
-                    AND p.event_id = ?
-                    AND p.access_code IS NOT NULL
+                    FROM redcap_data d
+                    JOIN redcap_surveys_response sr ON sr.record = d.record
+                    JOIN redcap_surveys_participants sp ON sp.participant_id = sr.participant_id
+                    WHERE 
+                        d.project_id = ? 
+                        AND sp.survey_id = ?
+                        AND d.event_id = ? 
+                        AND sp.access_code IS NOT NULL
+                    GROUP BY d.record
                 ',
                 [
+                    PROJECT_ID,
                     $survey_id,
                     $event_id
                 ]
             );
 
+           
             # Loop over $result because mysqli::fetch_all() is not implemented into query class
             while($row = $query->fetch_assoc()){
                 $result[] = $row;
@@ -140,13 +173,17 @@ class CustomParticipantExport extends AbstractExternalModule {
     # Trigger Hook
     public function redcap_every_page_top($project_id) {
 
+        echo PAGE;
+
         # Filter for Participant List Page
         if( PAGE === "Surveys/invite_participants.php" ) {
 
             # Check if correct Tab
             if( isset($_GET["participant_list"])) {
 
+                echo "YES";
                 $this->includeJsAndCss();
+
 
             }
 
