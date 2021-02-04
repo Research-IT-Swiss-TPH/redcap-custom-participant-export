@@ -154,22 +154,25 @@ class CustomParticipantExport extends AbstractExternalModule {
 
     # Trigger Hook
     public function redcap_every_page_top($project_id) {
+        global $Proj;
 
-        echo PAGE;
+        # Do not show button for longitudinal projects
+        if(!$Proj->longitudinal && !$Proj->multiple_armss) {
+            # Filter for Participant List Page
+            if( PAGE === "Surveys/invite_participants.php" ) {
 
-        # Filter for Participant List Page
-        if( PAGE === "Surveys/invite_participants.php" ) {
+                # Check if correct tab
+                if( isset($_GET["participant_list"])) {
+                    
+                    # Insert button
+                    $this->includeJsAndCss();
 
-            # Check if correct Tab
-            if( isset($_GET["participant_list"])) {
-
-                echo "YES";
-                $this->includeJsAndCss();
-
+                }
 
             }
-
         }
+
+
     }
 
 }
