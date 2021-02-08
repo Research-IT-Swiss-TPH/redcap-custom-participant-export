@@ -157,7 +157,6 @@ class CustomParticipantExport extends AbstractExternalModule {
         global $Proj;
 
         # Do not show button for longitudinal projects
-        if(!$Proj->longitudinal && !$Proj->multiple_armss) {
             # Filter for Participant List Page
             if( PAGE === "Surveys/invite_participants.php" ) {
 
@@ -170,7 +169,6 @@ class CustomParticipantExport extends AbstractExternalModule {
                 }
 
             }
-        }
 
 
     }
