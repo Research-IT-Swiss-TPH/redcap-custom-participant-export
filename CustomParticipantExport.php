@@ -56,7 +56,7 @@ class CustomParticipantExport extends AbstractExternalModule {
         }
 
         # Create Headers
-        $headers = ["access_code", "hash", "record"];
+        $headers = ["record", "access_code", "hash"];
         $fields = $this->getSubSettings("fields");
         foreach($fields as $field) {
             $name = $field["field_name"];
@@ -118,8 +118,8 @@ class CustomParticipantExport extends AbstractExternalModule {
                 '
                 SELECT
                     d.record,
-                    sr.participant_id,
-                    sp.access_code
+                    sp.access_code,
+                    sp.hash
                     '.$select_statement.'
                     FROM redcap_data d
                     JOIN redcap_surveys_response sr ON sr.record = d.record
