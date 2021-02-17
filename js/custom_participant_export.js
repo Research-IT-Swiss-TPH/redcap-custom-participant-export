@@ -25,20 +25,28 @@ $(function() {
     }
 
     function addButton() {
-        var parameters = getUrlEncodedParameters();
-        var url = "'"+STPH_CustomParticipantExport.requestHandlerUrl + "&type=downloadCSV" + parameters + "'";
-        
-        var newButtonHTML = '<button '+ (STPH_CustomParticipantExport.isDisabled == true ? "disabled" : "") +' id="em-custom-participant-export-btn" onclick="window.location.href='+url+'" class="btn jqbuttonmed"  ><i class="fas fa-file-csv"></i> Custom Export</button>';
-        var tableCol = $('table#partListTitle td.d-none');
 
-        //  Select element where the new button should be prepended. The selection is not very stable since there are no explicit IDs.
-        var btnDiv = $('table#partListTitle td.d-none div[style="padding:0"]');
-        
-        //  Prepend Button
-        btnDiv.prepend(newButtonHTML);
-        
-        //  Increase table column width to fit the button
-        tableCol.width("250");
+        // Check if button allready is inside the DOM
+        if( !$('#em-custom-participant-export-btn').length ) {
+           
+            var parameters = getUrlEncodedParameters();
+            var url = "'"+STPH_CustomParticipantExport.requestHandlerUrl + "&type=downloadCSV" + parameters + "'";
+            
+            var newButtonHTML = '<button '+ (STPH_CustomParticipantExport.isDisabled == true ? "disabled" : "") +' id="em-custom-participant-export-btn" onclick="window.location.href='+url+'" class="btn jqbuttonmed"  ><i class="fas fa-file-csv"></i> Custom Export</button>';
+            var tableCol = $('table#partListTitle td.d-none');
+    
+            //  Select element where the new button should be prepended. The selection is not very stable since there are no explicit IDs.
+            var btnDiv = $('table#partListTitle td.d-none div[style="padding:0"]');
+            
+            //  Prepend Button
+            btnDiv.prepend(newButtonHTML);
+            
+            //  Increase table column width to fit the button
+            tableCol.width("250");
+
+        }
+
+
     }
 
 
