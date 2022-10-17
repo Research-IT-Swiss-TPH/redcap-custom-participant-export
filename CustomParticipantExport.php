@@ -48,7 +48,7 @@ class CustomParticipantExport extends AbstractExternalModule {
         $event_id = $_GET["event_id"];
 
         # Get Participants
-        $participants = $this->getParticipants( $survey_id, $event_id );
+        $participants = (object) $this->getParticipants( $survey_id, $event_id );
 
         if(get_class($participants) == "Exception") {
             print $participants->getMessage();
