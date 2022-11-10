@@ -31,16 +31,23 @@ class CustomParticipantExport extends AbstractExternalModule {
     <?php
     }
 
-
+    /**
+     * Stream CSV download to browser after fetching
+     * data from database
+     * 
+     * @since 1.0.0
+     * 
+     */
     public function downloadCSV(){
         // CSV Download method copied from \Surveys\participant_export.php
         global $app_title;
         global $Proj;
 
-        // If no survey id, assume it's the first form and retrieve
+        // If no survey id, assume it's the first survey and retrieve its id
         if (!isset($_GET["survey_id"]) && !isset($_GET["event_id"]))
         {
-            $_GET['survey_id'] = \Survey::getSurveyId();
+            //  fetch id of first survey
+            $_GET['survey_id'] = $this->getFirstSurveyId();
             $_GET["event_id"] = getEventId();
         }
                 
@@ -95,6 +102,35 @@ class CustomParticipantExport extends AbstractExternalModule {
         }
     }
 
+    /**
+     * Get first survey ID in case that it is not given in the URL parameter
+     * This ensures that a custom participant list can also be generated if the
+     * first form is NOT a survey.
+     * 
+     * @since 1.3.0
+     * 
+     */
+    private function getFirstSurveyId() {
+        global $Proj;
+        $allForms = $Proj->eventsForms[getEventId()];
+        $firstSurveyId="";
+        $i=0;
+        while (empty($firstSurveyId)) {
+           $form_name = $allForms[$i];
+           if (!isset($Proj->forms[$form_name]['survey_id'])) {
+            $i=+1;
+           } else {
+            $firstSurveyId=$Proj->forms[$form_name]['survey_id'];
+           }
+        }
+        return $firstSurveyId;
+    }
+
+    /**
+     * Get list of participants from database
+     * 
+     * @since 1.0.0
+     */
     public function getParticipants($survey_id, $event_id) {
 
         global $Proj;
