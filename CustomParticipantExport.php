@@ -105,6 +105,7 @@ class CustomParticipantExport extends AbstractExternalModule {
             
         # Get custom fields from module settings
         $fields = $this->getSubSettings("fields");
+        $select_statement = "";
         
         # Iterate over fields and do a Pivot Calculation
         foreach($fields as $field){
