@@ -40,7 +40,6 @@ class CustomParticipantExport extends AbstractExternalModule {
     public function downloadCSV(){
         // CSV Download method copied from \Surveys\participant_export.php
         global $app_title;
-        global $Proj;
 
         // If no survey id, assume it's the first survey and retrieve its id
         if (!isset($_GET["survey_id"]) && !isset($_GET["event_id"]))
@@ -50,8 +49,8 @@ class CustomParticipantExport extends AbstractExternalModule {
             $_GET["event_id"] = getEventId();
         }
                 
-        $survey_id = $_GET["survey_id"];
-        $event_id = $_GET["event_id"];
+        $survey_id = $this->escape($_GET["survey_id"]);
+        $event_id = $this->escape($_GET["event_id"]);
 
         # Get Participants
         $participants = (object) $this->getParticipants( $survey_id, $event_id );
@@ -85,7 +84,7 @@ class CustomParticipantExport extends AbstractExternalModule {
                 fputcsv($fp, $participant);
             }
 
-            $download_filename = camelCase(html_entity_decode($app_title, ENT_QUOTES)) . "_CustomParticipants_" . date("Y-m-d_Hi") . ".csv";
+            $download_filename = camelCase(html_entity_decode($app_title, ENT_QUOTES)) . "_CustomExport_" . date("Y-m-d_Hi") . ".csv";
 
             header('Pragma: anytextexeptno-cache', true);
             header("Content-type: application/csv");
