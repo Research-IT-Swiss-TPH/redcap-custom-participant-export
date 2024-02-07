@@ -150,6 +150,9 @@ class CustomParticipantExport extends AbstractExternalModule {
         
         try {
 
+            # Since REDCap Version 14.0.0 there can be multiple redcap_data tables
+            $data_table = method_exists('\REDCap', 'getDataTable') ? \REDCap::getDataTable(PROJECT_ID) : "redcap_data";
+
             # Prepare SQL statement
             $query = $this->query(
                 '
@@ -158,7 +161,7 @@ class CustomParticipantExport extends AbstractExternalModule {
                     sp.access_code,
                     sp.hash
                     '.$select_statement.'
-                    FROM redcap_data d
+                    FROM '.$data_table.' d
                     JOIN redcap_surveys_response sr ON sr.record = d.record
                     JOIN redcap_surveys_participants sp ON sp.participant_id = sr.participant_id
                     WHERE 
@@ -168,7 +171,7 @@ class CustomParticipantExport extends AbstractExternalModule {
                         AND sp.access_code IS NOT NULL
                     GROUP BY d.record
                 ',
-                [
+                [                    
                     PROJECT_ID,
                     $survey_id,
                     $event_id
