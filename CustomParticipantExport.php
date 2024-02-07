@@ -3,7 +3,6 @@
 namespace STPH\CustomParticipantExport;
 
 use ExternalModules\AbstractExternalModule;
-use ExternalModules\ExternalModules;
 
 /**
  * Class CustomParticipantExport
@@ -11,11 +10,11 @@ use ExternalModules\ExternalModules;
  */
 class CustomParticipantExport extends AbstractExternalModule {
 
-    public function __construct()
-    {
-        parent::__construct();
-        define("MODULE_DOCROOT", $this->getModulePath());
-    }
+    // public function __construct()
+    // {
+    //     parent::__construct();
+    //     define("MODULE_DOCROOT", $this->getModulePath());
+    // }
 
     public function includeJsAndCss()
     {
